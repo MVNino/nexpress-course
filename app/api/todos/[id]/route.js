@@ -1,4 +1,5 @@
 import { connectToDatabase } from "@/utils/database";
+import { Neonderthaw } from "next/font/google";
 import { NextResponse } from "next/server";
 
 export const GET = async (request, { params }) => {
@@ -15,19 +16,27 @@ export const GET = async (request, { params }) => {
   return NextResponse.json(results[0]);
 };
 
-export const PUT = async (request, { params }) => {
-  try {
-    const { name } = request.body();
-
-    const connection = await connectToDatabase();
-
-    await connection.query(
-      "UPDATE tasks SET name = ? where id = ?",
-      [name, params.id]
-    );
-
-    return NextResponse.json("Updated!");
-  } catch (error) {
-    console.error(error);
-  }
+export const PUT = async (request, { params, body }) => {
+    try {
+        const { name, description } = await request.json();
+    
+        const connection = await connectToDatabase();
+    
+        await connection.query(
+          "UPDATE tasks SET name = ?, description = ? where id = ?",
+          [name, description, params.id]
+        );
+    
+        return NextResponse.json("Updated!");
+    } catch (error) {
+        return NextResponse.error(error)
+    }
 };
+
+export const DELETE = async (request, { params }) => {
+    const connection = await connectToDatabase()
+
+    await connection.query('DELETE FROM tasks WHERE id = ?', [ params.id ])
+
+    return NextResponse.json('Deleted!')
+}
