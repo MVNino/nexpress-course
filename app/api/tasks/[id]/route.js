@@ -13,7 +13,7 @@ export const GET = async (request, { params }) => {
     return NextResponse.json({ message: "Record not found!" }, { status: 404 });
   }
 
-  return NextResponse.json(results[0]);
+  return NextResponse.json({ data: results[0] });
 };
 
 export const PUT = async (request, { params, body }) => {
@@ -29,7 +29,7 @@ export const PUT = async (request, { params, body }) => {
     
         return NextResponse.json("Updated!");
     } catch (error) {
-        return NextResponse.error(error)
+      throw error
     }
 };
 
